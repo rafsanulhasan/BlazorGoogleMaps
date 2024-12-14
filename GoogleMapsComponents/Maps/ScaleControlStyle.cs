@@ -1,13 +1,15 @@
-﻿namespace GoogleMapsComponents.Maps
+﻿using System.Runtime.Serialization;
+
+namespace GoogleMapsComponents.Maps;
+
+/// <summary>
+/// Identifiers for scale control ids.
+/// </summary>
+public enum ScaleControlStyle
 {
     /// <summary>
-    /// Identifiers for scale control ids.
+    /// The standard scale control.
     /// </summary>
-    public class ScaleControlStyle
-    {
-        /// <summary>
-        /// The standard scale control.
-        /// </summary>
-        public const string DEFAULT = "DEFAULT";
-    }
+    [EnumMember(Value = "DEFAULT")]
+    Default
 }

@@ -1,17 +1,22 @@
-using Microsoft.AspNetCore.Components.Builder;
-using Microsoft.Extensions.DependencyInjection;
+﻿using GoogleMapsComponents;
+using GoogleMapsComponents.Maps;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using System.Threading.Tasks;
 
-namespace ClientSideDemo
+namespace ClientSideDemo;
+
+public class Startup
 {
-    public class Startup
+    private static async Task Main(string[] args)
     {
-        public void ConfigureServices(IServiceCollection services)
-        {
-        }
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-        public void Configure(IComponentsApplicationBuilder app)
+        builder.Services.AddBlazorGoogleMaps(new MapApiLoadOptions("AIzaSyBdkgvniMdyFPAcTlcZivr8f30iU-kn1T0")
         {
-            app.AddComponent<App>("app");
-        }
+            Version = "weekly"
+        });
+
+        builder.RootComponents.Add<App>("app");
+        await builder.Build().RunAsync();
     }
 }

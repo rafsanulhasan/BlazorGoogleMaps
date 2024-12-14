@@ -1,224 +1,154 @@
 ﻿using Microsoft.JSInterop;
-using OneOf;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace GoogleMapsComponents.Maps
+namespace GoogleMapsComponents.Maps;
+
+/// <summary>
+/// A polygon (like a polyline) defines a series of connected coordinates in an ordered sequence. Additionally, polygons form a closed loop and define a filled region
+/// https://developers.google.com/maps/documentation/javascript/reference/polygon#Polygon
+/// </summary>
+public class Polygon : ListableEntityBase<PolygonOptions>
 {
-    public class Polygon : IDisposable
+
+    /// <summary>
+    /// Create a polygon using the passed PolygonOptions, which specify the polygon's path, the stroke style for the polygon's edges, and the fill style for the polygon's interior regions. 
+    /// A polygon may contain one or more paths, where each path consists of an array of LatLngs.
+    /// </summary>
+    /// <param name="jsRuntime"></param>
+    /// <param name="opts"></param>
+    public static async Task<Polygon> CreateAsync(IJSRuntime jsRuntime, PolygonOptions? opts = null)
     {
-        protected readonly JsObjectRef _jsObjectRef;
+        var jsObjectRef = await JsObjectRef.CreateAsync(jsRuntime, "google.maps.Polygon", opts);
 
-        private Map? _map;
-        
-        public Guid Guid => _jsObjectRef.Guid;
+        var obj = new Polygon(jsObjectRef);
 
-        /// <summary>
-        /// Create a polygon using the passed PolygonOptions, which specify the polygon's path, the stroke style for the polygon's edges, and the fill style for the polygon's interior regions. 
-        /// A polygon may contain one or more paths, where each path consists of an array of LatLngs.
-        /// </summary>
-        /// <param name="jsRuntime"></param>
-        /// <param name="opts"></param>
-        public static async Task<Polygon> CreateAsync(IJSRuntime jsRuntime, PolygonOptions? opts = null)
-        {
-            var jsObjectRef = await JsObjectRef.CreateAsync(jsRuntime, "google.maps.Polygon", opts);
+        return obj;
+    }
 
-            var obj = new Polygon(jsObjectRef, opts);
+    /// <summary>
+    /// Constructor for use in ListableEntityListBase. Must be the first constructor!
+    /// </summary>
+    internal Polygon(JsObjectRef jsObjectRef)
+        : base(jsObjectRef)
+    {
+    }
 
-            return obj;
-        }
 
-        /// <summary>
-        /// Create a polygon using the passed PolygonOptions, which specify the polygon's path, the stroke style for the polygon's edges, and the fill style for the polygon's interior regions. 
-        /// A polygon may contain one or more paths, where each path consists of an array of LatLngs.
-        /// </summary>
-        /// <param name="jsObjectRef"></param>
-        /// <param name="opts"></param>
-        internal Polygon(JsObjectRef jsObjectRef, PolygonOptions? opts = null)
-        {
-            _jsObjectRef = jsObjectRef;
-            _map = opts?.Map;
-        }
+    /// <summary>
+    /// Returns whether this shape can be dragged by the user.
+    /// </summary>
+    /// <returns></returns>
+    public Task<bool> GetDraggable()
+    {
+        return _jsObjectRef.InvokeAsync<bool>(
+            "getDraggable");
+    }
 
-        public void Dispose()
-        {
-            _jsObjectRef.Dispose();
-        }
+    /// <summary>
+    /// Returns whether this shape can be edited by the user.
+    /// </summary>
+    /// <returns></returns>
+    public Task<bool> GetEditable()
+    {
+        return _jsObjectRef.InvokeAsync<bool>(
+            "getEditable");
+    }
 
-        /// <summary>
-        /// Returns whether this shape can be dragged by the user.
-        /// </summary>
-        /// <returns></returns>
-        public Task<bool> GetDraggble()
-        {
-            return _jsObjectRef.InvokeAsync<bool>(
-                "getDraggble");
-        }
+    /// <summary>
+    /// Retrieves the first path.
+    /// </summary>
+    /// <returns></returns>
+    public Task<IEnumerable<LatLngLiteral>> GetPath()
+    {
+        return _jsObjectRef.InvokeAsync<IEnumerable<LatLngLiteral>>(
+            "getPath");
+    }
 
-        /// <summary>
-        /// Returns whether this shape can be edited by the user.
-        /// </summary>
-        /// <returns></returns>
-        public Task<bool> GetEditable()
-        {
-            return _jsObjectRef.InvokeAsync<bool>(
-                "getEditable");
-        }
+    /// <summary>
+    /// Retrieves the paths for this polygon.
+    /// </summary>
+    /// <returns></returns>
+    public Task<IEnumerable<IEnumerable<LatLngLiteral>>> GetPaths()
+    {
+        return _jsObjectRef.InvokeAsync<IEnumerable<IEnumerable<LatLngLiteral>>>(
+            "getPaths");
+    }
 
-        /// <summary>
-        /// Returns the map on which this shape is attached.
-        /// </summary>
-        /// <returns></returns>
-        public Map? GetMap()
-        {
-            return _map;
-        }
+    /// <summary>
+    /// Returns whether this poly is visible on the map.
+    /// </summary>
+    /// <returns></returns>
+    public Task<bool> GetVisible()
+    {
+        return _jsObjectRef.InvokeAsync<bool>(
+            "getVisible");
+    }
 
-        /// <summary>
-        /// Retrieves the first path.
-        /// </summary>
-        /// <returns></returns>
-        public Task<IEnumerable<LatLngLiteral>> GetPath()
-        {
-            return _jsObjectRef.InvokeAsync<IEnumerable<LatLngLiteral>>(
-                "getPath");
-        }
+    /// <summary>
+    /// If set to true, the user can drag this shape over the map. 
+    /// The geodesic property defines the mode of dragging.
+    /// </summary>
+    /// <param name="draggable"></param>
+    public Task SetDraggable(bool draggable)
+    {
+        return _jsObjectRef.InvokeAsync(
+            "setDraggable",
+            draggable);
+    }
 
-        /// <summary>
-        /// Retrieves the paths for this polygon.
-        /// </summary>
-        /// <returns></returns>
-        public Task<IEnumerable<IEnumerable<LatLngLiteral>>> GetPaths()
-        {
-            return _jsObjectRef.InvokeAsync<IEnumerable<IEnumerable<LatLngLiteral>>>(
-                "getPaths");
-        }
+    /// <summary>
+    /// If set to true, the user can edit this shape by dragging the control points shown at the vertices and on each segment.
+    /// </summary>
+    /// <param name="editable"></param>
+    public Task SetEditable(bool editable)
+    {
+        return _jsObjectRef.InvokeAsync(
+            "setEditable",
+            editable);
+    }
 
-        /// <summary>
-        /// Returns whether this poly is visible on the map.
-        /// </summary>
-        /// <returns></returns>
-        public Task<bool> GetVisible()
-        {
-            return _jsObjectRef.InvokeAsync<bool>(
-                "getVisible");
-        }
+    /// <summary>
+    /// Sets the first path. See PolygonOptions for more details.
+    /// </summary>
+    /// <param name="options"></param>
+    public Task SetOptions(PolygonOptions options)
+    {
+        return _jsObjectRef.InvokeAsync(
+            "setOptions",
+            options);
+    }
 
-        /// <summary>
-        /// If set to true, the user can drag this shape over the map. 
-        /// The geodesic property defines the mode of dragging.
-        /// </summary>
-        /// <param name="draggble"></param>
-        public Task SetDraggble(bool draggble)
-        {
-            return _jsObjectRef.InvokeAsync(
-                "setDraggble",
-                draggble);
-        }
+    /// <summary>
+    /// Sets the first path. See PolygonOptions for more details.
+    /// </summary>
+    /// <param name="path"></param>
+    public Task SetPath(IEnumerable<LatLngLiteral> path)
+    {
+        return _jsObjectRef.InvokeAsync(
+            "setPath",
+            path);
+    }
 
-        /// <summary>
-        /// If set to true, the user can edit this shape by dragging the control points shown at the vertices and on each segment.
-        /// </summary>
-        /// <param name="editable"></param>
-        public Task SetEditable(bool editable)
-        {
-            return _jsObjectRef.InvokeAsync(
-                "setEditable",
-                editable);
-        }
+    /// <summary>
+    /// Sets the path for this polygon.
+    /// </summary>
+    /// <param name="paths"></param>
+    public Task SetPaths(IEnumerable<IEnumerable<LatLngLiteral>> paths)
+    {
+        return _jsObjectRef.InvokeAsync(
+            "setPaths",
+            paths);
+    }
 
-        /// <summary>
-        /// Renders this shape on the specified map. If map is set to null, the shape will be removed.
-        /// </summary>
-        /// <param name="map"></param>
-        public Task SetMap(Map map)
-        {
-            _map = map;
-
-            return _jsObjectRef.InvokeAsync(
-                "setMap",
-                map);
-        }
-
-        /// <summary>
-        /// Sets the first path. See PolygonOptions for more details.
-        /// </summary>
-        /// <param name="options"></param>
-        public Task SetOptions(PolygonOptions options)
-        {
-            return _jsObjectRef.InvokeAsync(
-                "setOptions",
-                options);
-        }
-
-        /// <summary>
-        /// Sets the first path. See PolygonOptions for more details.
-        /// </summary>
-        /// <param name="path"></param>
-        public Task SetPath(IEnumerable<LatLngLiteral> path)
-        {
-            return _jsObjectRef.InvokeAsync(
-                "setPath",
-                path);
-        }
-
-        /// <summary>
-        /// Sets the path for this polygon.
-        /// </summary>
-        /// <param name="paths"></param>
-        public Task SetPaths(IEnumerable<IEnumerable<LatLngLiteral>> paths)
-        {
-            return _jsObjectRef.InvokeAsync(
-                "setPaths",
-                paths);
-        }
-
-        /// <summary>
-        /// Hides this poly if set to false.
-        /// </summary>
-        /// <param name="visible"></param>
-        public Task SetVisible(bool visible)
-        {
-            return _jsObjectRef.InvokeAsync(
-                "setVisible",
-                visible);
-        }
-
-        public Task InvokeAsync(string functionName, params object[] args)
-        {
-            return _jsObjectRef.InvokeAsync(functionName, args);
-        }
-
-        public Task<T> InvokeAsync<T>(string functionName, params object[] args)
-        {
-            return _jsObjectRef.InvokeAsync<T>(functionName, args);
-        }
-
-        public Task<OneOf<T, U>> InvokeAsync<T, U>(string functionName, params object[] args)
-        {
-            return _jsObjectRef.InvokeAsync<T, U>(functionName, args);
-        }
-
-        public Task<OneOf<T, U, V>> InvokeAsync<T, U, V>(string functionName, params object[] args)
-        {
-            return _jsObjectRef.InvokeAsync<T, U, V>(functionName, args);
-        }
-
-        public async Task<MapEventListener> AddListener(string eventName, Action handler)
-        {
-            var listenerRef = await _jsObjectRef.InvokeWithReturnedObjectRefAsync(
-                "addListener", eventName, handler);
-
-            return new MapEventListener(listenerRef);
-        }
-
-        public async Task<MapEventListener> AddListener<T>(string eventName, Action<T> handler)
-        {
-            var listenerRef = await _jsObjectRef.InvokeWithReturnedObjectRefAsync(
-                "addListener", eventName, handler);
-
-            return new MapEventListener(listenerRef);
-        }
+    /// <summary>
+    /// Hides this poly if set to false.
+    /// </summary>
+    /// <param name="visible"></param>
+    public Task SetVisible(bool visible)
+    {
+        return _jsObjectRef.InvokeAsync(
+            "setVisible",
+            visible);
     }
 }

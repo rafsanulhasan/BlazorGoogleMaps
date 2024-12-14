@@ -1,10 +1,15 @@
-﻿namespace GoogleMapsComponents.Maps
+﻿using System.Text.Json.Serialization;
+
+namespace GoogleMapsComponents.Maps;
+
+/// <summary>
+/// Options for the rendering of the scale control.
+/// </summary>
+public class ScaleControlOptions
 {
     /// <summary>
-    /// Options for the rendering of the scale control.
+    /// Style id. Used to select what style of scale control to display.
     /// </summary>
-    public class ScaleControlOptions
-    {
-        public ScaleControlStyle style { get; set; }
-    }
+    [JsonConverter(typeof(EnumMemberConverter<ScaleControlStyle>))]
+    public ScaleControlStyle Style { get; set; }
 }

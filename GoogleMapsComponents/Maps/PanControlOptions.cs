@@ -1,14 +1,16 @@
-﻿namespace GoogleMapsComponents.Maps
+﻿using System.Text.Json.Serialization;
+
+namespace GoogleMapsComponents.Maps;
+
+/// <summary>
+/// Options for the rendering of the pan control.
+/// </summary>
+public class PanControlOptions
 {
     /// <summary>
-    /// Options for the rendering of the pan control.
+    /// Position id. Used to specify the position of the control on the map.
+    /// The default position is <c>RightBottom</c>.
     /// </summary>
-    public class PanControlOptions
-    {
-        /// <summary>
-        /// Position id. Used to specify the position of the control on the map. 
-        /// The default position is TOP_LEFT.
-        /// </summary>
-        public ControlPosition position { get; set; }
-    }
+    [JsonConverter(typeof(EnumMemberConverter<ControlPosition>))]
+    public ControlPosition Position { get; set; }
 }
